@@ -1,0 +1,105 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+<title> Particles!</title>
+<style type="text/css">
+body{
+	background-color:black;
+	margin:0px;
+	overflow:hidden;
+	}
+canvas{
+	/*border:1px white solid;*/
+	}
+</style>
+</head>
+<body>
+<script>
+
+var canvas = document.createElement('canvas');
+var my_Array=[];
+
+// notice mutliple vars with , 
+var width = canvas.width = 500, 
+	height = canvas.height = 500,
+	my_context = canvas.getContext('2d'),
+	allow_draw=false;
+	
+var mouseX = 250;
+var mouseY = 250;
+
+
+document.body.appendChild(canvas); 
+
+// Returns a random number between min (inclusive) and max (exclusive)
+function randomRange(min, max) { 
+	return  Math.random()*(max-min) + min; 
+}
+
+setInterval(draw,120);
+
+  function draw(){
+	  if(allow_draw){
+	  // create an array item, local variable (look at variable scope)
+	  	var my_pixel={x:mouseX, y:mouseY ,xSpeed:randomRange(-10,10),ySpeed:randomRange(-10,10),size:3};
+		
+		//add to array
+  		my_Array.push(my_pixel);
+		// clear the canvas or we will get a lovely start pattern
+  		my_context.clearRect(0,0,500,500);
+		
+		// loop through all in teh updated array and reposition and scale
+		for(var i=0; i<my_Array.length;i++)
+		{
+		my_pixel=my_Array[i];
+		// colour
+		// creates a random colour using (16777215 == ffffff in decimal)
+		var random_colour ='#'+Math.floor(Math.random()*16777215).toString(16);
+		my_context.fillStyle=random_colour;
+		//my_context.fillStyle='#ffffff';
+		  
+		  //position draw pixel on canvas square version
+		 //my_context.fillRect(my_pixel.x,my_pixel.y,my_pixel.size,my_pixel.size);
+		 
+		 // USE AN ARC INSTEAD
+		 my_context.beginPath();
+		 my_context.arc(my_pixel.x,my_pixel.y,my_pixel.size, 0, 2 * Math.PI, false);
+		 my_context.fill();
+		 
+		 // circle version - arc and diameter
+		 	//my_context.beginPath();
+		  	//my_context.arc(my_pixel.x, my_pixel.y, my_pixel.size/2, 0, 2 * Math.PI, false);
+     		//my_context.fill();
+		  
+		  // update position x and y to offset
+		  my_pixel.x=my_pixel.x+ my_pixel.xSpeed;
+		  my_pixel.y=my_pixel.y+ my_pixel.ySpeed;
+		  
+		  // reduce the size of the pixel by
+		  my_pixel.size=my_pixel.size*0.96;
+		  
+		  // AND OPACITY
+		  my_pixel.opacity=my_pixel.size*0.50;
+		}
+	  }
+	  
+  }
+  
+canvas.addEventListener("mousedown",(function(e){
+allow_draw=true;
+mouseX = e.pageX - this.offsetLeft;
+mouseY = e.pageY - this.offsetTop;
+		console.log(mouseX,mouseY);
+
+}));
+ canvas.addEventListener("mouseup",(function(e){
+	 allow_draw=false;
+	 my_context.clearRect(0,0,500,500);
+	 my_Array=[];
+}));
+		</script>
+
+</body>
+</html>
